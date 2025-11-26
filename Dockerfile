@@ -1,8 +1,8 @@
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-COPY backend/target/custom-logo-builder-1.0.0.jar app.jar
+COPY backend/target/logo-builder-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
