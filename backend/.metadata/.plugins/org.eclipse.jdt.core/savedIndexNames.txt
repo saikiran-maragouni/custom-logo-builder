@@ -1,0 +1,11 @@
+INDEX VERSION 1.134+C:\Users\MASAIKIR\Saikiran\GEN-AI\Case Study - 5 ( AI Custom Logo Builder )\custom-logo-builder\backend\.metadata\.plugins\org.eclipse.jdt.core
+73121464.index
+3148403584.index
+1865797976.index
+2791121579.index
+2619125126.index
+2154790524.index
+1698827149.index
+2725594825.index
+1050042363.index
+1758445889.index

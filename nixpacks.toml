@@ -1,0 +1,13 @@
+[phases.setup]
+nixPkgs = ['nodejs', 'maven']
+
+[phases.build]
+cmds = [
+  'cd frontend && npm install && npm run build',
+  'mkdir -p backend/src/main/resources/static',
+  'cp -r frontend/build/* backend/src/main/resources/static/',
+  'cd backend && mvn clean package -DskipTests'
+]
+
+[start]
+cmd = 'java -jar backend/target/logo-builder-0.0.1-SNAPSHOT.jar'
