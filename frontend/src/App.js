@@ -85,8 +85,16 @@ function App() {
         {currentView === 'editor' ? (
           <>
             <div className="left-panel">
+              <Toolbar 
+                selectedTool={selectedTool} 
+                setSelectedTool={setSelectedTool}
+                canvas={canvas}
+                history={history}
+                setHistory={setHistory}
+                historyIndex={historyIndex}
+                setHistoryIndex={setHistoryIndex}
+              />
               <Templates canvas={canvas} />
-              <Preview canvas={canvas} />
               <AITools canvas={canvas} />
               <SavedLogos canvas={canvas} user={user} />
             </div>
