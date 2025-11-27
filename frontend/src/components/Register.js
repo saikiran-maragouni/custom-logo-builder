@@ -15,14 +15,27 @@ const Register = ({ onRegister, switchToLogin }) => {
 
     try {
       const response = await authAPI.register({ username, email, password });
-      if (response.data.success) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        onRegister(response.data.user);
+      console.log('Register response:', response);
+      
+      let data;
+      if (typeof response.data === 'string') {
+        if (response.data.startsWith('<!DOCTYPE') || response.data.startsWith('<html')) {
+          throw new Error('Backend server is not responding correctly. Please ensure the backend is running on port 8080.');
+        }
+        data = JSON.parse(response.data);
       } else {
-        setError(response.data.message);
+        data = response.data;
+      }
+      
+      if (data.success) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        onRegister(data.user);
+      } else {
+        setError(data.message || 'Registration failed');
       }
     } catch (error) {
-      setError('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      setError(error.message || 'Registration failed. Please ensure backend is running.');
     } finally {
       setLoading(false);
     }
@@ -30,6 +43,7 @@ const Register = ({ onRegister, switchToLogin }) => {
 
   return (
     <div className="auth-container">
+      <h1 className="auth-site-title">Custom Logo Builder</h1>
       <div className="auth-card">
         <h2>Join Us!</h2>
         <p>Create your account to start designing amazing logos</p>

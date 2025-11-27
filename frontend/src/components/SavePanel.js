@@ -18,22 +18,25 @@ const SavePanel = ({ canvas }) => {
       return;
     }
 
+    if (!user?.id) {
+      alert('Please login to save logos');
+      return;
+    }
+
     try {
       const canvasData = JSON.stringify(canvas.toJSON());
       const response = await logoAPI.createLogo({
         name: logoName,
         canvasData: canvasData,
         isPublic: isPublic
-      }, user?.id);
+      }, user.id);
       
-      if (response.status === 200) {
-        alert(`Logo saved ${isPublic ? 'publicly' : 'privately'} successfully!`);
-        setLogoName('');
-      }
+      alert(`Logo saved ${isPublic ? 'publicly' : 'privately'} successfully!`);
+      setLogoName('');
+      window.dispatchEvent(new Event('logoSaved'));
     } catch (error) {
       console.error('Error saving logo:', error);
-      const errorMsg = error.response?.data || 'Error saving logo';
-      alert(errorMsg);
+      alert('Error saving logo. Please try again.');
     }
   };
 

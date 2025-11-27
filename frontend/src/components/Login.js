@@ -15,25 +15,27 @@ const Login = ({ onLogin, switchToRegister }) => {
     try {
       console.log('Attempting login with:', { username });
       const response = await authAPI.login({ username, password });
-      console.log('Login response:', response.data);
+      console.log('Login response:', response);
       
-      if (response.data.success) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        onLogin(response.data.user);
+      let data;
+      if (typeof response.data === 'string') {
+        if (response.data.startsWith('<!DOCTYPE') || response.data.startsWith('<html')) {
+          throw new Error('Backend server is not responding correctly. Please ensure the backend is running on port 8080.');
+        }
+        data = JSON.parse(response.data);
       } else {
-        setError(response.data.message || 'Login failed');
+        data = response.data;
+      }
+      
+      if (data.success) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        onLogin(data.user);
+      } else {
+        setError(data.message || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      console.error('Error response:', error.response);
-      
-      let errorMsg = 'Login failed. Please try again.';
-      if (error.response?.data?.message) {
-        errorMsg = error.response.data.message;
-      } else if (error.response?.data) {
-        errorMsg = typeof error.response.data === 'string' ? error.response.data : 'Login failed';
-      }
-      setError(errorMsg);
+      setError(error.message || 'Login failed. Please ensure backend is running.');
     } finally {
       setLoading(false);
     }
@@ -41,6 +43,7 @@ const Login = ({ onLogin, switchToRegister }) => {
 
   return (
     <div className="auth-container">
+      <h1 className="auth-site-title">Custom Logo Builder</h1>
       <div className="auth-card">
         <h2>Welcome Back!</h2>
         <p>Sign in to access your logo designs</p>

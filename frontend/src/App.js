@@ -8,8 +8,10 @@ import ContextToolbar from './components/ContextToolbar';
 import Login from './components/Login';
 import Register from './components/Register';
 import GlobalLogos from './components/GlobalLogos';
+import Templates from './components/Templates';
+import Preview from './components/Preview';
+import AITools from './components/AITools';
 import './App.css';
-import './ModernTheme.css';
 
 function App() {
   const [selectedTool, setSelectedTool] = useState('select');
@@ -19,25 +21,12 @@ function App() {
   const [user, setUser] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
   const [currentView, setCurrentView] = useState('editor');
-  const [isModernUI, setIsModernUI] = useState(false);
-
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
-    
-    const savedTheme = localStorage.getItem('modernUI');
-    if (savedTheme === 'true') {
-      setIsModernUI(true);
-    }
   }, []);
-  
-  const toggleTheme = () => {
-    const newTheme = !isModernUI;
-    setIsModernUI(newTheme);
-    localStorage.setItem('modernUI', newTheme.toString());
-  };
 
   const handleLogin = (userData) => {
     setUser(userData);
@@ -67,7 +56,7 @@ function App() {
   }
 
   return (
-    <div className={`app ${isModernUI ? 'modern-theme' : 'classic-theme'}`}>
+    <div className="app">
       <header className="app-header">
         <div className="header-content">
           <h1>Custom Logo Builder</h1>
@@ -86,13 +75,6 @@ function App() {
             </button>
           </nav>
           <div className="user-info">
-            <button 
-              onClick={toggleTheme} 
-              className="theme-toggle-btn"
-              title={`Switch to ${isModernUI ? 'Classic' : 'Modern'} UI`}
-            >
-              {isModernUI ? '🎨' : '✨'}
-            </button>
             <span>Welcome, {user.username}!</span>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
           </div>
@@ -103,17 +85,9 @@ function App() {
         {currentView === 'editor' ? (
           <>
             <div className="left-panel">
-              <Toolbar 
-                selectedTool={selectedTool} 
-                setSelectedTool={setSelectedTool}
-                canvas={canvas}
-                history={history}
-                setHistory={setHistory}
-                historyIndex={historyIndex}
-                setHistoryIndex={setHistoryIndex}
-              />
-              <LogoGenerator canvas={canvas} />
-              <BrandingSuggestions canvas={canvas} />
+              <Templates canvas={canvas} />
+              <Preview canvas={canvas} />
+              <AITools canvas={canvas} />
               <SavedLogos canvas={canvas} user={user} />
             </div>
             
@@ -133,6 +107,23 @@ function App() {
                 historyIndex={historyIndex}
                 setHistoryIndex={setHistoryIndex}
               />
+            </div>
+
+            <div className="mobile-toolbar-wrapper">
+              <Toolbar 
+                selectedTool={selectedTool} 
+                setSelectedTool={setSelectedTool}
+                canvas={canvas}
+                history={history}
+                setHistory={setHistory}
+                historyIndex={historyIndex}
+                setHistoryIndex={setHistoryIndex}
+              />
+              <div className="mobile-only">
+                <AITools canvas={canvas} />
+                <Templates canvas={canvas} />
+                <SavedLogos canvas={canvas} user={user} />
+              </div>
             </div>
           </>
         ) : (

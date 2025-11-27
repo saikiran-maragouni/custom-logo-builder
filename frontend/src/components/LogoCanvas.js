@@ -7,9 +7,9 @@ const LogoCanvas = ({ selectedTool, setCanvas, history, setHistory, historyIndex
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current, {
-      width: 600,
-      height: 400,
-      backgroundColor: 'white',
+      width: 800,
+      height: 600,
+      backgroundColor: '#ffffff',
     });
 
     fabricCanvasRef.current = canvas;

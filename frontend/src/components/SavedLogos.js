@@ -30,7 +30,8 @@ const SavedLogos = ({ canvas, user }) => {
     try {
       const response = await logoAPI.getAllLogos(user.id);
       console.log('Loaded logos:', response.data);
-      setSavedLogos(response.data || []);
+      const logos = Array.isArray(response.data) ? response.data : [];
+      setSavedLogos(logos);
     } catch (error) {
       console.error('Error loading logos:', error);
       setSavedLogos([]);

@@ -300,11 +300,11 @@ const LogoGenerator = ({ canvas }) => {
         >
           {loading ? (
             <span>
-              ✨ Generating amazing logos...
+              <span className="spinner">⚡</span> AI is creating your logos...
             </span>
           ) : (
             <span>
-              🎨 Generate Logos
+              🎨 Generate AI Logos
             </span>
           )}
         </button>

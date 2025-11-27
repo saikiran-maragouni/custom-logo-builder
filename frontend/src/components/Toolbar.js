@@ -14,6 +14,11 @@ const Toolbar = ({ selectedTool, setSelectedTool, canvas, history, setHistory, h
   const [isItalic, setIsItalic] = useState(false);
   const [textOpacity, setTextOpacity] = useState(1);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({ basic: true });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   React.useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -283,30 +288,18 @@ const Toolbar = ({ selectedTool, setSelectedTool, canvas, history, setHistory, h
       const canvasData = JSON.stringify(canvas.toJSON());
       console.log('Saving logo:', { name: logoName, isPublic, userId: user.id });
       
-      const response = await logoAPI.createLogo({
+      await logoAPI.createLogo({
         name: logoName,
         canvasData: canvasData,
         isPublic: isPublic
       }, user.id);
       
-      if (response.status === 200) {
-        alert(`Logo saved ${isPublic ? 'publicly' : 'privately'} successfully!`);
-        setLogoName('');
-        window.dispatchEvent(new CustomEvent('logoSaved'));
-      }
+      alert(`Logo saved ${isPublic ? 'publicly' : 'privately'} successfully!`);
+      setLogoName('');
+      window.dispatchEvent(new CustomEvent('logoSaved'));
     } catch (error) {
-      console.error('Full error details:', error);
-      console.error('Error response:', error.response);
-      console.error('Error message:', error.message);
-      
-      let errorMsg = 'Error saving logo';
-      if (error.response?.data) {
-        errorMsg = typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data);
-      } else if (error.message) {
-        errorMsg = error.message;
-      }
-      
-      alert(errorMsg);
+      console.error('Error saving logo:', error);
+      alert('Error saving logo. Please try again.');
     }
   };
 
@@ -350,6 +343,148 @@ const Toolbar = ({ selectedTool, setSelectedTool, canvas, history, setHistory, h
             onClick={() => setSelectedTool('draw')}
           >
             Draw
+          </button>
+        </div>
+      </div>
+
+      <div className="tool-group">
+        <h4>Alignment</h4>
+        <div className="tool-buttons">
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              obj.set({ left: (canvas.width / 2) - (obj.width * obj.scaleX / 2) });
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Center H
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              obj.set({ top: (canvas.height / 2) - (obj.height * obj.scaleY / 2) });
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Center V
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              obj.set({ left: 0 });
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Align Left
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              obj.set({ left: canvas.width - (obj.width * obj.scaleX) });
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Align Right
+          </button>
+        </div>
+      </div>
+
+      <div className="tool-group">
+        <h4>Object Actions</h4>
+        <div className="tool-buttons">
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              obj.clone((cloned) => {
+                cloned.set({ left: cloned.left + 10, top: cloned.top + 10 });
+                canvas.add(cloned);
+                canvas.setActiveObject(cloned);
+                canvas.renderAll();
+                setTimeout(saveToHistory, 100);
+              });
+            }
+          }}>
+            Duplicate
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const activeObj = canvas?.getActiveObject();
+            if (activeObj && activeObj.type === 'activeSelection') {
+              activeObj.toGroup();
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Group
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const activeObj = canvas?.getActiveObject();
+            if (activeObj && activeObj.type === 'group') {
+              activeObj.toActiveSelection();
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Ungroup
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              canvas.remove(obj);
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div className="tool-group">
+        <h4>Layers</h4>
+        <div className="tool-buttons">
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              canvas.bringForward(obj);
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Bring Forward
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              canvas.sendBackwards(obj);
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Send Backward
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              canvas.bringToFront(obj);
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Bring to Front
+          </button>
+          <button className="tool-btn" onClick={() => {
+            const obj = canvas?.getActiveObject();
+            if (obj) {
+              canvas.sendToBack(obj);
+              canvas.renderAll();
+              setTimeout(saveToHistory, 100);
+            }
+          }}>
+            Send to Back
           </button>
         </div>
       </div>
@@ -476,13 +611,90 @@ const Toolbar = ({ selectedTool, setSelectedTool, canvas, history, setHistory, h
       </div>
 
       <div className="tool-group">
-        <h4>Color</h4>
-        <div className="color-picker">
+        <h4>Colors</h4>
+        <label style={{ fontSize: '0.75rem', color: '#842A3B', marginBottom: '0.25rem', display: 'block' }}>Object Color</label>
+        <div className="color-picker" style={{ marginBottom: '0.75rem' }}>
           <input
             type="color"
             value={selectedColor}
             onChange={(e) => setSelectedColor(e.target.value)}
           />
+        </div>
+        <label style={{ fontSize: '0.75rem', color: '#842A3B', marginBottom: '0.25rem', display: 'block' }}>Canvas Background</label>
+        <div className="color-picker">
+          <input
+            type="color"
+            defaultValue="#ffffff"
+            onChange={(e) => {
+              if (canvas) {
+                canvas.setBackgroundColor(e.target.value, canvas.renderAll.bind(canvas));
+                setTimeout(saveToHistory, 100);
+              }
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="tool-group">
+        <h4>View Options</h4>
+        <div className="tool-buttons">
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            const hasGrid = canvas.backgroundImage;
+            if (hasGrid) {
+              canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
+            } else {
+              const gridSize = 20;
+              const width = canvas.width;
+              const height = canvas.height;
+              const gridCanvas = document.createElement('canvas');
+              gridCanvas.width = width;
+              gridCanvas.height = height;
+              const ctx = gridCanvas.getContext('2d');
+              ctx.strokeStyle = '#e0e0e0';
+              ctx.lineWidth = 1;
+              for (let i = 0; i < width; i += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, height);
+                ctx.stroke();
+              }
+              for (let i = 0; i < height; i += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(width, i);
+                ctx.stroke();
+              }
+              fabric.Image.fromURL(gridCanvas.toDataURL(), (img) => {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+              });
+            }
+          }}>
+            Toggle Grid
+          </button>
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            const zoom = canvas.getZoom();
+            canvas.setZoom(zoom * 1.1);
+            canvas.renderAll();
+          }}>
+            Zoom In
+          </button>
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            const zoom = canvas.getZoom();
+            canvas.setZoom(zoom * 0.9);
+            canvas.renderAll();
+          }}>
+            Zoom Out
+          </button>
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            canvas.setZoom(1);
+            canvas.renderAll();
+          }}>
+            Reset Zoom
+          </button>
         </div>
       </div>
 
@@ -494,6 +706,52 @@ const Toolbar = ({ selectedTool, setSelectedTool, canvas, history, setHistory, h
           onChange={handleImageUpload}
           style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', borderRadius: '8px', border: '2px solid #A3485A' }}
         />
+      </div>
+
+      <div className="tool-group">
+        <h4>Canvas Actions</h4>
+        <div className="tool-buttons">
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            canvas.clear();
+            canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas));
+          }}>
+            Clear Canvas
+          </button>
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
+            const link = document.createElement('a');
+            link.download = 'logo.png';
+            link.href = dataURL;
+            link.click();
+          }}>
+            Export PNG
+          </button>
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            const dataURL = canvas.toDataURL({ format: 'jpeg', quality: 0.9 });
+            const link = document.createElement('a');
+            link.download = 'logo.jpg';
+            link.href = dataURL;
+            link.click();
+          }}>
+            Export JPG
+          </button>
+          <button className="tool-btn" onClick={() => {
+            if (!canvas) return;
+            const svg = canvas.toSVG();
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = 'logo.svg';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+          }}>
+            Export SVG
+          </button>
+        </div>
       </div>
 
       <div className="tool-group">

@@ -92,11 +92,11 @@ const BrandingSuggestions = ({ canvas }) => {
         >
           {loading ? (
             <span>
-              🤖 AI is thinking...
+              <span className="spinner">🧠</span> AI is analyzing your brand...
             </span>
           ) : (
             <span>
-              ✨ Get AI Suggestions
+              ✨ Get AI Branding Suggestions
             </span>
           )}
         </button>
