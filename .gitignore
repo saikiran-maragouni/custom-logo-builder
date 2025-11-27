@@ -3,6 +3,11 @@ backend/target/
 backend/.mvn/
 backend/mvnw
 backend/mvnw.cmd
+backend/.metadata/
+backend/.settings/
+backend/.sonarlint/
+backend/.classpath
+backend/.project
 
 # Frontend
 frontend/node_modules/
@@ -19,3 +24,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Temp directories
+-p/

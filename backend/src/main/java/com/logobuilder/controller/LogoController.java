@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/logos")
-@CrossOrigin(origins = {"http://localhost:3000", "https://*.railway.app", "https://*.up.railway.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "https://*.railway.app", "https://*.up.railway.app", "https://*.onrender.com", "https://*.vercel.app"})
 public class LogoController {
     
     @Autowired
