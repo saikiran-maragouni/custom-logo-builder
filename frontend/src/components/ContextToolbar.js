@@ -30,8 +30,8 @@ const ContextToolbar = ({ canvas, history, setHistory, historyIndex, setHistoryI
         const canvasRect = canvasElement.getBoundingClientRect();
         
         setPosition({
-          x: Math.min(Math.max(objCoords.left + objCoords.width / 2, 100), canvasRect.width - 100),
-          y: Math.max(objCoords.top - 60, 10)
+          x: Math.min(Math.max(objCoords.left + objCoords.width + 20, 100), canvasRect.width - 100),
+          y: Math.max(objCoords.top - 20, 10)
         });
       } else {
         setSelectedObject(null);
@@ -63,8 +63,8 @@ const ContextToolbar = ({ canvas, history, setHistory, historyIndex, setHistoryI
         const canvasRect = canvasElement.getBoundingClientRect();
         
         setPosition({
-          x: Math.min(Math.max(pointer.x, 100), canvasRect.width - 100),
-          y: Math.max(pointer.y - 60, 10)
+          x: Math.min(Math.max(pointer.x + 30, 100), canvasRect.width - 100),
+          y: Math.max(pointer.y - 20, 10)
         });
       } else {
         // Right-click on empty canvas

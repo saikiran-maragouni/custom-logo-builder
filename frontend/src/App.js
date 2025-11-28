@@ -9,7 +9,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import GlobalLogos from './components/GlobalLogos';
 import Templates from './components/Templates';
-import Preview from './components/Preview';
+
 import AITools from './components/AITools';
 import './App.css';
 
