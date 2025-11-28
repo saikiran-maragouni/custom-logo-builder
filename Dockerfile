@@ -1,22 +1,22 @@
 # Build frontend
-FROM node:18 AS frontend-build
+FROM node:18-alpine AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm ci --only=production
 COPY frontend/ ./
 ARG REACT_APP_API_URL
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN npm run build
 
 # Build backend
-FROM maven:3.8.6-openjdk-17 AS backend-build
+FROM maven:3.9-eclipse-temurin-17-alpine AS backend-build
 WORKDIR /app/backend
 COPY backend/pom.xml ./
 COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Final stage
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # Copy backend jar
