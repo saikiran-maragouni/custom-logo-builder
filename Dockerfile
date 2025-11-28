@@ -16,7 +16,7 @@ COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Final stage
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 # Copy backend jar
