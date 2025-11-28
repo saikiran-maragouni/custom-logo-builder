@@ -1,8 +1,9 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
 const fetchAPI = async (url, options = {}) => {
   const response = await fetch(API_BASE_URL + url, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
+    mode: 'cors',
     ...options,
   });
   const text = await response.text();
