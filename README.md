@@ -2,6 +2,8 @@
 
 A full-stack web application for creating custom logos with AI-powered branding suggestions.
 
+Live link - https://custom-logo-builder.onrender.com/
+
 ## Features
 
 - **Drag & Drop Canvas**: Create logos using shapes, text, and drawing tools
